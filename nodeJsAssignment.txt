@@ -1,0 +1,203 @@
+1.
+
+a.
+
+import fs from "fs"; 
+import { parseString } from "xml2js"; 
+  
+var xmldata = '<?xml version=”1.0" encoding=”UTF-8"?>' +
+'<Student>' +
+    '<PersonalInformation>' +
+        '<FirstName>Kalyan</FirstName>' +
+        '<LastName>Chandra</LastName>' +
+        '<Gender>Male</Gender>' +
+    '</PersonalInformation>' +
+    '<PersonalInformation>' +
+        '<FirstName>Prem</FirstName>' +
+        '<LastName>Chandra</LastName>' +
+        '<Gender>Male</Gender>' +
+    '</PersonalInformation>' +
+'</Student>';
+
+parseString(xmldata, function (err, results) {
+let data = JSON.stringify(results)
+console.log("results",data);
+});
+
+
+b.
+
+fs = require('fs');
+var parser = require('xml2json');
+
+fs.readFile( './data.xml', function(err, data) {
+    var json = parser.toJson(data);
+    console.log("to json ->", json);
+ });
+
+
+
+ 3.
+
+ a.
+
+
+var request = require("request");
+var fs = require('fs')
+
+
+request(
+    { uri: "http://www.google.com" },
+    function(error, response, body) {
+        fs.writeFile("./homepage.html", body, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+        });
+    }
+);
+
+
+b.
+
+var fs = require('fs'),
+    request = require('request');
+var download = function(uri, filename, callback){
+  request.head(uri, function(err, res, body){
+    console.log('content-type:', res.headers['content-type']);
+    console.log('content-length:', res.headers['content-length']);
+
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  });
+};
+
+download('https://www.google.com/images/srpr/logo3w.png', 'google.png', function(){
+  console.log('done');
+});
+
+
+4.
+
+
+const fs = require('fs-extra');
+const url = require("url");
+const path = require('path');
+const axios = require('axios');
+const archiver = require('archiver');
+const zip = require('adm-zip')
+const express = require('express')
+
+const downloadImage = async function(image , index) {
+
+  const name = url.parse(image);
+  let response, zipper;
+
+  const writer = fs.createWriteStream(
+    path.resolve(__dirname, 'images', 'image'+index+'.png')
+  );
+
+  try {
+    response = await axios({
+      url: image,
+      method: 'GET',
+      responseType: 'stream',
+    });
+    response.data.pipe(writer);
+    console.log(index);
+  } catch(err) {
+    console.error('There was a problem with the axios request')
+    throw err;
+  }
+
+  return new Promise((resolve, reject) => {
+
+    writer.on('finish', resolve);
+    writer.on('error', reject);
+
+  }).then(() => {
+    return response;
+  });
+
+};
+ function getDirectoryListZip(dir){
+    var ip = new zip();
+    files = fs.readdirSync(dir);
+    files.forEach(function(file){
+    ip.addFile(file);
+    });
+    ip.writeZip("./imgs.zip");
+    return;
+};
+
+
+
+// (async function() {
+
+//   //const image1 = await downloadImage('http://sousmonarbre.com/qphj/bd963843d2239ed78aa6f7b0a36b537d/qdp/shapely-table-mat-design-office-bay-decoration-mes-at-work-decorating-ideas-office-decoration-mes-design-ideas-cream-wall-paint-decoration-messroom-wooden-laminate-ing-tosca-color__office-decorating-ideas.jpg',1);
+//   const image2 = await downloadImage('https://doodleart.redbull.com/assets/managed/entries/processed/sm/367010617181759_36211000.jpg',2);
+//   const image3 = await downloadImage('https://www.justcolor.net/wp-content/uploads/sites/1/nggallery/doodle-art-doodling/coloring-page-adults-doodle-art-rachel.jpg',3);
+//   const image4 = await downloadImage('https://i.pinimg.com/originals/e5/55/a3/e555a39ca5457a079a9bcce59f61f8d5.jpg',4);
+//  // const image5 = await downloadImage('http://canhotopazelite.info/wp-content/uploads/2018/08/office-bay-decoration-themes-with-office-bay-decoration-themes-elegant-yet-fun-office-bay-decoration-14.jpg',5);
+//   const image6 = await downloadImage('https://i.pinimg.com/originals/ef/4c/91/ef4c91fb73e61e19211a0589187ccaa6.jpg',6);
+//   const image7 = await downloadImage('https://static.vecteezy.com/system/resources/previews/000/107/464/non_2x/huge-doodle-vector-pack.jpg',7);
+//   const image8 = await downloadImage('https://i.ytimg.com/vi/O5u1apUkYV0/maxresdefault.jpg',8);
+//   const image9 = await downloadImage('https://media.glassdoor.com/l/e9/c1/7a/84/independence-day-celebration.jpg',9);
+
+// })()
+
+//parallely
+
+function p(){
+    const image2 =  downloadImage('https://doodleart.redbull.com/assets/managed/entries/processed/sm/367010617181759_36211000.jpg',2);
+    const image3 =  downloadImage('https://www.justcolor.net/wp-content/uploads/sites/1/nggallery/doodle-art-doodling/coloring-page-adults-doodle-art-rachel.jpg',3);
+    const image4 =  downloadImage('https://i.pinimg.com/originals/e5/55/a3/e555a39ca5457a079a9bcce59f61f8d5.jpg',4);
+   const image6 =  downloadImage('https://i.pinimg.com/originals/ef/4c/91/ef4c91fb73e61e19211a0589187ccaa6.jpg',6);
+    const image7 =  downloadImage('https://static.vecteezy.com/system/resources/previews/000/107/464/non_2x/huge-doodle-vector-pack.jpg',7);
+    const image8 =  downloadImage('https://i.ytimg.com/vi/O5u1apUkYV0/maxresdefault.jpg',8);
+    const image9 =  downloadImage('https://media.glassdoor.com/l/e9/c1/7a/84/independence-day-celebration.jpg',9);
+  }
+
+
+  async function myFlow(){
+   
+  const l =  await p();
+   const m =  await getDirectoryListZip('./images');
+    }
+
+
+    myFlow();
+
+
+
+
+MISCELLENEOUS
+
+
+npm install node-url-shortener --save
+
+var shortUrl = require('node-url-shortener');
+var fs = require('fs');
+let array = [
+'http://sousmonarbre.com/qphj/bd963843d2239ed78aa6f7b0a36b537d/qdp/shapely-table-mat-design-office-bay-decoration-mes-at-work-decorating-ideas-office-decoration-mes-design-ideas-cream-wall-paint-decoration-messroom-wooden-laminate-ing-tosca-color__office-decorating-ideas.jpg',
+'https://doodleart.redbull.com/assets/managed/entries/processed/sm/367010617181759_36211000.jpg',
+'https://www.justcolor.net/wp-content/uploads/sites/1/nggallery/doodle-art-doodling/coloring-page-adults-doodle-art-rachel.jpg',
+'https://i.pinimg.com/originals/e5/55/a3/e555a39ca5457a079a9bcce59f61f8d5.jpg',
+'http://canhotopazelite.info/wp-content/uploads/2018/08/office-bay-decoration-themes-with-office-bay-decoration-themes-elegant-yet-fun-office-bay-decoration-14.jpg',
+'https://i.pinimg.com/originals/ef/4c/91/ef4c91fb73e61e19211a0589187ccaa6.jpg',
+'https://static.vecteezy.com/system/resources/previews/000/107/464/non_2x/huge-doodle-vector-pack.jpg',
+'https://i.ytimg.com/vi/O5u1apUkYV0/maxresdefault.jpg',
+'https://media.glassdoor.com/l/e9/c1/7a/84/independence-day-celebration.jpg'
+
+]
+
+
+let writeStream = fs.createWriteStream('./filename.csv')
+array.forEach((item)=>{
+    shortUrl.short(item, function(err, url){
+        let newLine = []
+        newLine.push(item)
+        newLine.push(url)
+        writeStream.write(newLine.join(',')+ '\n', () => {
+        })
+});
+});

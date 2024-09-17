@@ -1,0 +1,131 @@
+1.
+const person = {
+    firstName : 'Kalyan',
+    lastName  : 'Chandra',
+    age : 23
+}
+
+2.
+
+
+var array = [ 
+    {
+      channel: "A"
+    },
+    {
+      channel: "A"
+    },
+    {
+      channel: "B"
+    },
+    {
+      channel: "C"
+    }
+  ];
+  
+  
+  class MetadataParser {
+  
+      constructor(version, channel, keyfield){
+          this._version = version;
+          this._channel = channel;
+          this._keyfield = keyfield;
+      }
+   
+       get version() {
+          return this._version;
+        }
+        set version(x) {
+          this._version = x;
+        }
+        get channel() {
+          return this._channel;
+        }
+        set channel(x) {
+          this._channel = x;
+        }
+        get keyfield() {
+          return this._keyfield;
+        }
+        set keyfield(x) {
+          this._keyfield = x;
+        }
+    
+         getKeyFields(array, property) {
+      
+          return array.map((t)=>{
+              return t[property];
+          });
+      }
+  
+   }
+  
+  let p = new MetadataParser();
+  p.getKeyFields(array,'channel')
+
+
+
+3.
+
+
+var channels = [ 
+    {
+      "channel": "A",
+      "name": "shoe"
+    },
+    {
+      "channel": "A",
+      "name": "electronics"
+    },
+    {
+      "channel": "B",
+      "name": "apparel"
+    },
+    {
+      "channel": "C",
+      "name": "electronics"
+    }
+  ],
+      result = channels.reduce((r, a) => {
+      const ch = a.channel;
+         if(r[ch]==null)r[ch] = [];
+         r[ch].push(a);
+         return r;
+      }, {});
+  
+  console.log(result);
+
+
+  4.
+
+  class SortArray {
+    constructor(array) {
+        this.array = array;
+    }
+  
+    getSortedArray(array){
+      return array.sort(function(a, b){return a - b});
+    }
+  
+}
+
+class SortObjectArray  extends SortArray{
+    constructor(array) {
+        super();
+    }
+  
+    getSortedArray(array){
+      return Object.keys(array).sort(function(a,b){return array[a]-array[b]});
+    }
+  
+}
+
+
+
+
+let m=new SortArray();
+m.getSortedArray([1,4,2,8])
+
+
+let y =new SortObjectArray();
+y.getSortedArray({"you": 100, "me": 75, "foo": 116, "bar": 15})
